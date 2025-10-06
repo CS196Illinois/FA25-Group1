@@ -1,0 +1,6 @@
+Atributes of calendar
+- the date at the top
+- a one day caldenar containing all the events for the day
+- lines 
+- events containing the start and end time
+- can scroll down
