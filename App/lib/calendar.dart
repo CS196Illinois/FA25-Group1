@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
-void main() {
-  runApp( MaterialApp(
-    home: Scaffold(
+
+class Calendar extends StatelessWidget {
+  const Calendar({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
       appBar: AppBar(
-        title: Text('Calendar'),
-        backgroundColor: Color.fromARGB(88, 10, 129, 81),
+        title: const Text('Calendar'),
+        backgroundColor: Color(0xFF6200EE),
         centerTitle: true,
       ),
-      body: Text("here is the caldenar"),
-    )
-  ));
+      body: const Text("hi"),
+    );
+  }
 }
