@@ -24,7 +24,7 @@ class _CalendarState extends State<Calendar> {
     });
   }
 
-  double heigh = 75.0;
+  double heigh = 50.0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,61 +43,25 @@ class _CalendarState extends State<Calendar> {
         backgroundColor: Color(0xFF6200EE),
         centerTitle: true,
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            height: heigh,
-            color: Colors.blue[000],
-            alignment: Alignment.center,
-            child: Text(
-              "12 AM - 1 AM ",
-              style: TextStyle(textBaseline: TextBaseline.ideographic),
-            ),
-          ),
-          Container(
-            height: heigh,
-            color: Colors.blue[100],
-            alignment: Alignment.center,
-            child: Text("1 AM - 2 AM", style: TextStyle()),
-          ),
-          Container(
-            height: heigh,
-            color: Colors.blue[200],
-            alignment: Alignment.center,
-            child: Text("2 Am - 3 AM", style: TextStyle()),
-          ),
-          Container(
-            height: heigh,
-            color: Colors.blue[300],
-            alignment: Alignment.center,
-            child: Text("3 Am - 4 AM", style: TextStyle()),
-          ),
-          Container(
-            height: heigh,
-            color: Colors.blue[400],
-            alignment: Alignment.center,
-            child: Text("4 Am - 5 AM", style: TextStyle()),
-          ),
-          Container(
-            height: heigh,
-            color: Colors.blue[500],
-            alignment: Alignment.center,
-            child: Text("5 Am - 6 AM", style: TextStyle()),
-          ),
-          Container(
-            height: heigh,
-            color: Colors.blue[600],
-            alignment: Alignment.center,
-            child: Text("6 Am - 7 AM", style: TextStyle()),
-          ),
-          Container(
-            height: heigh,
-            color: Colors.blue[700],
-            alignment: Alignment.center,
-            child: Text("7 Am - 8 AM", style: TextStyle()),
-          ),
-        ],
+      body: Container(
+        child: SingleChildScrollView(
+          child: Column(children: [
+            for (int i = 1; i < 12; i++)
+              Container(
+                height: heigh,
+                color: i < 3? const Color.fromARGB(255, 45, 45, 45): Colors.blue[100 * (i % 12) - 200],
+                alignment: Alignment.centerLeft,
+                child: Text("${i} AM - ${i + 1} AM", textAlign: TextAlign.left, style: TextStyle(color: i < 3? Colors.white: Colors.black)),
+              ),
+            for (int j = 13; j < 24; j++)
+              Container(
+                height: heigh, 
+                color: Colors.orange[100 * (j % 12)],
+                alignment: Alignment.centerLeft,
+                child: Text("${j - 12} PM - ${j - 11} PM", textAlign: TextAlign.left,),
+              )
+          ],)
+        )
       ),
     );
   }
