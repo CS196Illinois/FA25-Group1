@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:helloworld/sign-in-page.dart';
 import 'package:helloworld/calendar.dart';
 
 void main() {
-  runApp( MaterialApp(
-    home: Calendar()
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: HomePage(), // start with Sign-In page
   ));
 }
+
