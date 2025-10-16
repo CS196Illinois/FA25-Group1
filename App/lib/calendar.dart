@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:collection';
+import 'form_page.dart';
 
 DateTime now = DateTime.now();
 int month = now.month;
@@ -119,7 +120,15 @@ class _CalendarState extends State<Calendar> {
             const SizedBox(width: 10),
             ElevatedButton(onPressed: increaseDate, child: const Text(">")),
             const SizedBox(width: 10),
-            ElevatedButton(onPressed: () {}, child: const Text("+")),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const FormPage()),
+                );
+              },
+              child: const Text("+"),
+            ),
           ],
         ),
         backgroundColor: Color(0xFF6200EE),
