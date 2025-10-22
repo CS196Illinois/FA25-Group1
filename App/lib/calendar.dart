@@ -1,3 +1,5 @@
+//import 'dart:nativewrappers/_internal/vm/lib/ffi_patch.dart';
+
 import 'package:flutter/material.dart';
 import 'dart:collection';
 import 'form_page.dart';
@@ -114,13 +116,30 @@ class _CalendarState extends State<Calendar> {
       appBar: AppBar(
         title: Row(
           children: [
-            Text("$currentMonth$day, $year"),
+            Text("$currentMonth$day", textAlign: TextAlign.left, style: TextStyle(
+              fontSize: 20,
+            ),),
             const Expanded(child: SizedBox()),
-            ElevatedButton(onPressed: decreaseDate, child: const Text("<")),
+            SizedBox(
+              width: 50,
+              height: 20,
+              child: ElevatedButton(
+                onPressed: decreaseDate,
+                child: const Text("<"),
+              ),
+            ),
             const SizedBox(width: 10),
-            ElevatedButton(onPressed: increaseDate, child: const Text(">")),
+            SizedBox(
+              width: 50, 
+              height: 20,
+              child: ElevatedButton(
+                onPressed: increaseDate, 
+                child: const Text(">"),),),
             const SizedBox(width: 10),
-            ElevatedButton(
+            SizedBox(
+              width: 50,
+              height: 20,
+              child: ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
@@ -128,6 +147,7 @@ class _CalendarState extends State<Calendar> {
                 );
               },
               child: const Text("+"),
+            ),
             ),
           ],
         ),
