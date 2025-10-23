@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:helloworld/calendar.dart';
+import 'package:helloworld/log_in.dart';
 
 void main() {
-  runApp( MaterialApp(
-    home: Calendar()
-  ));
+  runApp(MaterialApp(home: HomePage()));
 }
