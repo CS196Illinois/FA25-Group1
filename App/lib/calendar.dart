@@ -1,6 +1,9 @@
+//import 'dart:nativewrappers/_internal/vm/lib/ffi_patch.dart';
+
 import 'package:flutter/material.dart';
 import 'dart:collection';
-import 'form_page.dart';
+import 'package:helloworld/rso.dart';
+//import 'rso.dart';
 
 DateTime now = DateTime.now();
 int month = now.month;
@@ -114,20 +117,38 @@ class _CalendarState extends State<Calendar> {
       appBar: AppBar(
         title: Row(
           children: [
-            Text("$currentMonth$day, $year"),
+            Text("$currentMonth$day", textAlign: TextAlign.left, style: TextStyle(
+              fontSize: 20,
+            ),),
             const Expanded(child: SizedBox()),
-            ElevatedButton(onPressed: decreaseDate, child: const Text("<")),
+            SizedBox(
+              width: 50,
+              height: 20,
+              child: ElevatedButton(
+                onPressed: decreaseDate,
+                child: const Text("<"),
+              ),
+            ),
             const SizedBox(width: 10),
-            ElevatedButton(onPressed: increaseDate, child: const Text(">")),
+            SizedBox(
+              width: 50, 
+              height: 20,
+              child: ElevatedButton(
+                onPressed: increaseDate, 
+                child: const Text(">"),),),
             const SizedBox(width: 10),
-            ElevatedButton(
+            SizedBox(
+              width: 50,
+              height: 20,
+              child: ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const FormPage()),
+                  MaterialPageRoute(builder: (context) => const MyApp()),
                 );
               },
               child: const Text("+"),
+            ),
             ),
           ],
         ),
