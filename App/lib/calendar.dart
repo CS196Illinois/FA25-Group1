@@ -168,7 +168,7 @@ class _CalendarState extends State<Calendar> {
                       : Colors.blue[(100 * (12 - (i % 12)))],
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    "${i} AM - ${i + 1} AM",
+                    "$i AM - ${i + 1} AM",
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       color: i < 3 ? Colors.white : Colors.black,
