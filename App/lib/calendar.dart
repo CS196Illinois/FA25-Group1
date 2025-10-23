@@ -2,7 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'dart:collection';
-import 'rso.dart';
+import 'package:helloworld/rso.dart';
+//import 'rso.dart';
 
 DateTime now = DateTime.now();
 int month = now.month;
@@ -120,13 +121,6 @@ class _CalendarState extends State<Calendar> {
               fontSize: 20,
             ),),
             const Expanded(child: SizedBox()),
-<<<<<<< HEAD
-            ElevatedButton(onPressed: decreaseDate, child: const Text("<")),
-            const SizedBox(width: 0),
-            ElevatedButton(onPressed: increaseDate, child: const Text(">")),
-            const SizedBox(width: 0),
-            ElevatedButton(
-=======
             SizedBox(
               width: 50,
               height: 20,
@@ -147,7 +141,6 @@ class _CalendarState extends State<Calendar> {
               width: 50,
               height: 20,
               child: ElevatedButton(
->>>>>>> 23724c06eaa0978d73c7697d1ea0845095460f73
               onPressed: () {
                 Navigator.push(
                   context,

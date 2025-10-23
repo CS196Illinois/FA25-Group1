@@ -31,22 +31,10 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-<<<<<<< HEAD
- flutter:
-   sdk: flutter
- animate_do: ^3.1.2
-
-
- # The following adds the Cupertino Icons font to your application.
- # Use with the CupertinoIcons class for iOS style icons.
- cupertino_icons: ^1.0.8
- intl: ^0.18.1
-=======
   flutter:
     sdk: flutter
   table_calendar: ^3.0.8 
   animate_do: ^3.1.2
->>>>>>> 23724c06eaa0978d73c7697d1ea0845095460f73
 
 
 dev_dependencies:
@@ -70,19 +58,12 @@ dev_dependencies:
 flutter:
 
 
-<<<<<<< HEAD
- # The following line ensures that the Material Icons font is
- # included with your application, so that you can use the icons in
- # the material Icons class.
- uses-material-design: true
-=======
   # To add assets to your application, add an assets section, like this:
   assets:
      - assets/images/background.png
      - assets/images/light-1.png
      - assets/images/light-2.png
      - assets/images/clock.png
->>>>>>> 23724c06eaa0978d73c7697d1ea0845095460f73
 
 
  # To add assets to your application, add an assets section, like this:
