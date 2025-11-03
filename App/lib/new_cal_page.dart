@@ -12,6 +12,14 @@ class new_cal extends StatefulWidget {
 
 class _new_calState extends State<new_cal> {
   CalendarFormat _calendarFormat = CalendarFormat.week;
+  void switchview() {
+    if (_calendarFormat == CalendarFormat.week) {
+      _calendarFormat = CalendarFormat.month;
+    } else {
+      _calendarFormat = CalendarFormat.week;
+    }
+  }
+
   void goToDate(DateTime day, DateTime focusedDay) {
     setState(() {
       now = day;
@@ -25,6 +33,17 @@ class _new_calState extends State<new_cal> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            SizedBox(
+              width: 50,
+              child: GestureDetector(
+                onTap: () {
+                  switchview();
+                  setState(() {});
+                },
+                child: const Text("View"),
+              ),
+            ),
+            SizedBox(width: 20),
             Text('Calendar'),
             SizedBox(width: 20),
             SizedBox(
@@ -34,7 +53,9 @@ class _new_calState extends State<new_cal> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) =>  const MyHomePage(title: 'My RSOs')),
+                    MaterialPageRoute(
+                      builder: (context) => const MyHomePage(title: 'My RSOs'),
+                    ),
                   );
                 },
                 child: const Text("+"),
