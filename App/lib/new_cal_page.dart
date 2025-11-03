@@ -30,27 +30,30 @@ class _new_calState extends State<new_cal> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromRGBO(232, 119, 34, 1),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-              width: 50,
-              child: GestureDetector(
-                onTap: () {
+              width: 80,
+              child: ElevatedButton(
+                onPressed: () {
                   switchview();
                   setState(() {});
                 },
-                child: const Text("View"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromRGBO(19, 41, 75, 1),
+                ),
+                child: Text("View", style: TextStyle(color: Color.fromRGBO(232, 119, 34, 1))),
               ),
             ),
             SizedBox(width: 20),
             Text('Calendar'),
             SizedBox(width: 20),
             SizedBox(
-              width: 50,
-              height: 30,
-              child: GestureDetector(
-                onTap: () {
+              width: 80,
+              child: ElevatedButton(
+                onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -58,7 +61,10 @@ class _new_calState extends State<new_cal> {
                     ),
                   );
                 },
-                child: const Text("+"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color.fromRGBO(19, 41, 75, 1),
+                ),
+                child: Text("+", style: TextStyle(color: Color.fromRGBO(232, 119, 34, 1))),
               ),
             ),
           ],
@@ -73,6 +79,7 @@ class _new_calState extends State<new_cal> {
       children: [
         Container(
           child: TableCalendar(
+            
             calendarFormat: _calendarFormat,
             rowHeight: 85,
             focusedDay: now,
