@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:helloworld/calendar.dart';
 import 'package:helloworld/rso.dart';
+import 'package:helloworld/events.dart';
 
 class new_cal extends StatefulWidget {
   const new_cal({super.key});
@@ -12,6 +13,9 @@ class new_cal extends StatefulWidget {
 
 class _new_calState extends State<new_cal> {
   CalendarFormat _calendarFormat = CalendarFormat.week;
+  DateTime _focusedDay = DateTime.now();
+  DateTime? _selectedDay;
+  late final ValueNotifier<List<Events>> _selectedEvents;
   void switchview() {
     if (_calendarFormat == CalendarFormat.week) {
       _calendarFormat = CalendarFormat.month;
@@ -24,6 +28,21 @@ class _new_calState extends State<new_cal> {
     setState(() {
       now = day;
     });
+  }
+
+  void initState() {
+    super.initState();
+    _selectedDay = _focusedDay;
+    _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+  }
+
+  void dispose() {
+    _selectedEvents.dispose();
+    super.dispose();
+  }
+
+  List<Events> _getEventsForDay(DateTime day) {
+    return kEvents[normalizeToDay(day)] ?? [];
   }
 
   @override
@@ -44,7 +63,10 @@ class _new_calState extends State<new_cal> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color.fromRGBO(19, 41, 75, 1),
                 ),
-                child: Text("View", style: TextStyle(color: Color.fromRGBO(232, 119, 34, 1))),
+                child: Text(
+                  "View",
+                  style: TextStyle(color: Color.fromRGBO(232, 119, 34, 1)),
+                ),
               ),
             ),
             SizedBox(width: 20),
@@ -64,7 +86,10 @@ class _new_calState extends State<new_cal> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color.fromRGBO(19, 41, 75, 1),
                 ),
-                child: Text("+", style: TextStyle(color: Color.fromRGBO(232, 119, 34, 1))),
+                child: Text(
+                  "+",
+                  style: TextStyle(color: Color.fromRGBO(232, 119, 34, 1)),
+                ),
               ),
             ),
           ],
@@ -79,7 +104,6 @@ class _new_calState extends State<new_cal> {
       children: [
         Container(
           child: TableCalendar(
-            
             calendarFormat: _calendarFormat,
             rowHeight: 85,
             focusedDay: now,
