@@ -45,6 +45,26 @@ class _new_calState extends State<new_cal> {
     return kEvents[normalizeToDay(day)] ?? [];
   }
 
+  // Handles day selection on the calendar
+  // NEW FEATURE: Auto-switches from monthly to weekly view when day is tapped
+  // This provides a two-tier navigation: monthly view for overview, weekly view for details
+  void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
+    if (!SameDay(_selectedDay!, selectedDay)) {
+      setState(() {
+        _selectedDay = selectedDay;
+        _focusedDay = focusedDay;
+
+        // NEW FEATURE: If in monthly view, automatically switch to weekly view
+        // This allows users to see event details only when they tap a specific day
+        if (_calendarFormat == CalendarFormat.month) {
+          _calendarFormat = CalendarFormat.week;
+        }
+      });
+      // Load and display events for the selected day
+      _selectedEvents.value = _getEventsForDay(selectedDay);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,17 +126,51 @@ class _new_calState extends State<new_cal> {
           child: TableCalendar(
             calendarFormat: _calendarFormat,
             rowHeight: 85,
-            focusedDay: now,
+            focusedDay: _focusedDay,
             firstDay: DateTime.utc(1999, 1, 1),
             lastDay: DateTime.utc(2099, 12, 31),
-            selectedDayPredicate: (day) => isSameDay(day, now),
+            selectedDayPredicate: (day) => _selectedDay != null && SameDay(day, _selectedDay!),
+            eventLoader: _getEventsForDay,
             headerStyle: HeaderStyle(
               formatButtonVisible: false,
               titleCentered: true,
             ),
-            onDaySelected: goToDate,
+            onDaySelected: _onDaySelected,
           ),
         ),
+        const SizedBox(height: 8.0),
+        // NEW FEATURE: Conditional event list display
+        // Event list only appears in weekly view, not in monthly view
+        // This creates a cleaner monthly overview and detailed weekly view
+        if (_calendarFormat == CalendarFormat.week)
+          Expanded(
+            child: ValueListenableBuilder<List<Events>>(
+              valueListenable: _selectedEvents,
+              builder: (context, value, _) {
+                return ListView.builder(
+                  itemCount: value.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 12.0,
+                        vertical: 4.0,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      child: ListTile(
+                        onTap: () => print('${value[index]}'),
+                        title: Text('${value[index].title}'),
+                        subtitle: Text('${value[index].description}'),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+
       ],
     );
   }
