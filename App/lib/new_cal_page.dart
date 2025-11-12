@@ -46,7 +46,6 @@ class _new_calState extends State<new_cal> {
   }
 
   // Handles day selection on the calendar
-  // NEW FEATURE: Auto-switches from monthly to weekly view when day is tapped
   // This provides a two-tier navigation: monthly view for overview, weekly view for details
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     if (!SameDay(_selectedDay!, selectedDay)) {
@@ -54,8 +53,7 @@ class _new_calState extends State<new_cal> {
         _selectedDay = selectedDay;
         _focusedDay = focusedDay;
 
-        // NEW FEATURE: If in monthly view, automatically switch to weekly view
-        // This allows users to see event details only when they tap a specific day
+        // Allows users to see event details only when tap on a specific day
         if (_calendarFormat == CalendarFormat.month) {
           _calendarFormat = CalendarFormat.week;
         }
@@ -139,9 +137,7 @@ class _new_calState extends State<new_cal> {
           ),
         ),
         const SizedBox(height: 8.0),
-        // NEW FEATURE: Conditional event list display
         // Event list only appears in weekly view, not in monthly view
-        // This creates a cleaner monthly overview and detailed weekly view
         if (_calendarFormat == CalendarFormat.week)
           Expanded(
             child: ValueListenableBuilder<List<Events>>(
@@ -170,7 +166,6 @@ class _new_calState extends State<new_cal> {
               },
             ),
           ),
-
       ],
     );
   }

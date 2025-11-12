@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:helloworld/events.dart';
 
 class FormPage extends StatefulWidget {
   const FormPage({super.key});
@@ -10,11 +11,13 @@ class FormPage extends StatefulWidget {
 class _FormPageState extends State<FormPage> {
   final TextEditingController _timeController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
 
   @override
   void dispose() {
     _timeController.dispose();
     _locationController.dispose();
+    _titleController.dispose();
     super.dispose();
   }
 
@@ -41,7 +44,15 @@ class _FormPageState extends State<FormPage> {
             TextField(
               controller: _locationController,
               decoration: const InputDecoration(
-                labelText: 'Location',
+                labelText: 'description',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            TextField(
+              controller: _titleController,
+              decoration: const InputDecoration(
+                labelText: 'Event Title',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -51,8 +62,25 @@ class _FormPageState extends State<FormPage> {
                 // Handle form submission logic here
                 String time = _timeController.text;
                 String location = _locationController.text;
+                String title = _titleController.text;
                 print('Event Time: $time, Event Location: $location');
-                Navigator.pop(context);
+                try {
+                  Events newEvent = Events(title, DateTime.parse(time), location);
+                  DateTime eventDay = normalizeToDay(newEvent.date);
+                  if (kEvents[eventDay] != null) {
+                    kEvents[eventDay]!.add(newEvent);
+                    Navigator.pop(context);
+                  } else {
+                    kEvents[eventDay] = [newEvent];
+                }
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please use yyyy-mm-dd hh:mm:ss format for time'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
               },
               child: const Text('Save'),
             ),
