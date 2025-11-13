@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
-import 'package:helloworld/calendar.dart';
-
+//import 'package:helloworld/calendar.dart';
+import 'package:helloworld/rso_list_page.dart';
 void main() => runApp(
   MaterialApp(
     debugShowCheckedModeBanner: false,
@@ -161,7 +161,7 @@ class HomePage extends StatelessWidget {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => Calendar()),
+                            MaterialPageRoute(builder: (context) => RsoListPage()),
                           );
                         },
                         child: Container(
