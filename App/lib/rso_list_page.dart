@@ -120,9 +120,12 @@ import 'package:helloworld/calendar_page.dart';
 import 'rso.dart';
 import 'my_rso_page.dart';
 import 'application_page.dart';
+import 'user_database.dart';
 
 class RsoListPage extends StatefulWidget {
-  const RsoListPage({super.key});
+  final User? user;
+
+  const RsoListPage({super.key, this.user});
 
   @override
   State<RsoListPage> createState() => _RsoListPageState();
@@ -301,23 +304,58 @@ class _RsoListPageState extends State<RsoListPage> {
       ),
     ]);
 
-    // ✅ Initialize current user with some joined RSOs
-    _currentUser = User(
-      username: "student@illinois.edu",
-      passkey: "password123",
-      rso_list: {
-        _rsos[1]: "member",  // Open Source @ Illinois
-        _rsos[2]: "member",  // WCS: Women in Computer Science
-      },
-    );
+    // ✅ Initialize current user - use passed user or create default
+    if (widget.user != null) {
+      _currentUser = widget.user!;
 
-    // Set membership status for RSOs the user has joined
-    _rsos[1].membershipStatus = MembershipStatus.member;
-    _rsos[2].membershipStatus = MembershipStatus.member;
+      // Load user's pre-existing memberships from database
+      final memberships = UserDatabase.getUserMemberships(_currentUser.username);
 
-    // Add their events to the calendar
-    CalendarManager().addRsoEvents(_rsos[1].events);
-    CalendarManager().addRsoEvents(_rsos[2].events);
+      // Populate the user's RSO list based on their memberships
+      for (var entry in memberships.entries) {
+        final rsoName = entry.key;
+        final status = entry.value;
+
+        // Find the matching RSO in our list
+        final matchingRso = _rsos.firstWhere(
+          (r) => r.name == rsoName,
+          orElse: () => _rsos[0], // Fallback to first RSO if not found
+        );
+
+        if (matchingRso.name == rsoName) {
+          // Add to user's RSO list
+          _currentUser.rso_list[matchingRso] = status;
+
+          // Update RSO membership status
+          if (status == "member") {
+            matchingRso.membershipStatus = MembershipStatus.member;
+            CalendarManager().addRsoEvents(matchingRso.events);
+          } else if (status == "inactive") {
+            matchingRso.membershipStatus = MembershipStatus.inactive;
+          } else if (status == "pending") {
+            matchingRso.membershipStatus = MembershipStatus.pending;
+          }
+        }
+      }
+    } else {
+      // Default user for testing/backward compatibility
+      _currentUser = User(
+        username: "student@illinois.edu",
+        passkey: "password123",
+        rso_list: {
+          _rsos[1]: "member",  // Open Source @ Illinois
+          _rsos[2]: "member",  // WCS: Women in Computer Science
+        },
+      );
+
+      // Set membership status for RSOs the user has joined
+      _rsos[1].membershipStatus = MembershipStatus.member;
+      _rsos[2].membershipStatus = MembershipStatus.member;
+
+      // Add their events to the calendar
+      CalendarManager().addRsoEvents(_rsos[1].events);
+      CalendarManager().addRsoEvents(_rsos[2].events);
+    }
   }
 
   List<RSO> get joinedRsos => _rsos.where((rso) => rso.isMember).toList();
@@ -372,6 +410,7 @@ class _RsoListPageState extends State<RsoListPage> {
                 // User is leaving the RSO (but can rejoin without reapplying)
                 rso.membershipStatus = MembershipStatus.inactive;
                 CalendarManager().removeRsoEvents(rso.events);
+                _currentUser.rso_list[rso] = "inactive";
               }
             });
           },
@@ -387,6 +426,7 @@ class _RsoListPageState extends State<RsoListPage> {
                 // User is rejoining the RSO (no need to reapply)
                 rso.membershipStatus = MembershipStatus.member;
                 CalendarManager().addRsoEvents(rso.events);
+                _currentUser.rso_list[rso] = "member";
               }
             });
           },
@@ -398,7 +438,16 @@ class _RsoListPageState extends State<RsoListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("All RSOs"),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text("All RSOs"),
+            Text(
+              _currentUser.username,
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+            ),
+          ],
+        ),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(

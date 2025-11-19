@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 //import 'package:helloworld/calendar.dart';
 import 'package:helloworld/rso_list_page.dart';
+import 'package:helloworld/user_database.dart';
+
 void main() => runApp(
   MaterialApp(
     debugShowCheckedModeBanner: false,
@@ -9,8 +11,55 @@ void main() => runApp(
   )
 );
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  String _errorMessage = '';
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _handleLogin() {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    // Simple validation
+    if (email.isEmpty || password.isEmpty) {
+      setState(() {
+        _errorMessage = 'Please enter both email and password';
+      });
+      return;
+    }
+
+    // Try to get user from database
+    try {
+      final user = UserDatabase.getUserByCredentials(email, password);
+
+      // Navigate to RSO list page with the authenticated user
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => RsoListPage(user: user),
+        ),
+      );
+    } catch (e) {
+      // Show error message on screen
+      setState(() {
+        _errorMessage = 'Invalid username or password';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -131,39 +180,62 @@ class HomePage extends StatelessWidget {
                                 ),
                               ),
                               child: TextField(
+                                controller: _emailController,
                                 keyboardType: TextInputType.emailAddress,
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintText: "Email or Phone number",
                                   hintStyle: TextStyle(color: Colors.grey[700]),
                                 ),
+                                onChanged: (value) {
+                                  if (_errorMessage.isNotEmpty) {
+                                    setState(() {
+                                      _errorMessage = '';
+                                    });
+                                  }
+                                },
                               ),
                             ),
                             Container(
                               padding: EdgeInsets.all(8.0),
                               child: TextField(
+                                controller: _passwordController,
                                 obscureText: true,
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
                                   hintText: "Password",
                                   hintStyle: TextStyle(color: Colors.grey[700]),
                                 ),
+                                onChanged: (value) {
+                                  if (_errorMessage.isNotEmpty) {
+                                    setState(() {
+                                      _errorMessage = '';
+                                    });
+                                  }
+                                },
                               ),
                             ),
                           ],
                         ),
                       ),
                     ),
-                    SizedBox(height: 30),
+                    SizedBox(height: 10),
+                    if (_errorMessage.isNotEmpty)
+                      FadeInUp(
+                        duration: Duration(milliseconds: 300),
+                        child: Text(
+                          _errorMessage,
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    SizedBox(height: 20),
                     FadeInUp(
                       duration: Duration(milliseconds: 1900),
                       child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => RsoListPage()),
-                          );
-                        },
+                        onTap: _handleLogin,
                         child: Container(
                           height: 50,
                           decoration: BoxDecoration(
