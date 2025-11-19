@@ -1,13 +1,13 @@
 class User {
   final String username;
   final String passkey;
-  final List<RSO> joinedRsos;
+  final Map<RSO, String> rso_list;
 
   User({
     required this.username,
     required this.passkey,
-    List<RSO>? joinedRsos,
-  }) : joinedRsos = joinedRsos ?? [];
+    Map<RSO, String>? rso_list,
+  }) : rso_list = rso_list ?? {};
 }
 class RSO {
   final String name;

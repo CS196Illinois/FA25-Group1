@@ -305,7 +305,7 @@ class _RsoListPageState extends State<RsoListPage> {
     _currentUser = User(
       username: "student@illinois.edu",
       passkey: "password123",
-      joinedRsos: [],
+      rso_list: {},
     );
   }
 
@@ -347,7 +347,7 @@ class _RsoListPageState extends State<RsoListPage> {
                 activeThumbColor: Colors.orange,
                 onChanged: (bool val) {
                   // Check if switching ON and user is NOT in this RSO
-                  if (val && !_currentUser.joinedRsos.contains(rso)) {
+                  if (val && !_currentUser.rso_list.containsKey(rso)) {
                     // Navigate to application form page
                     Navigator.push(
                       context,

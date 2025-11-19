@@ -176,14 +176,14 @@ void main() {
       final user = User(
         username: "testuser@illinois.edu",
         passkey: "password",
-        joinedRsos: [rso1, rso2],
+        rso_list: {rso1: "approved", rso2: "pending"},
       );
 
       expect(user.username, "testuser@illinois.edu");
       expect(user.passkey, "password");
-      expect(user.joinedRsos.length, 2);
-      expect(user.joinedRsos.contains(rso1), true);
-      expect(user.joinedRsos.contains(rso2), true);
+      expect(user.rso_list.length, 2);
+      expect(user.rso_list.containsKey(rso1), true);
+      expect(user.rso_list.containsKey(rso2), true);
     });
 
     test('User can be created with empty joined RSOs', () {
@@ -192,7 +192,7 @@ void main() {
         passkey: "password",
       );
 
-      expect(user.joinedRsos, isEmpty);
+      expect(user.rso_list, isEmpty);
     });
   });
 }
