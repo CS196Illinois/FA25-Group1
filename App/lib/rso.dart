@@ -1,3 +1,14 @@
+class User {
+  final String username;
+  final String passkey;
+  final List<RSO> joinedRsos;
+
+  User({
+    required this.username,
+    required this.passkey,
+    List<RSO>? joinedRsos,
+  }) : joinedRsos = joinedRsos ?? [];
+}
 class RSO {
   final String name;
   final String description;
