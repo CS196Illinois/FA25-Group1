@@ -119,7 +119,7 @@ import 'package:helloworld/calendar_manager.dart';
 import 'package:helloworld/calendar_page.dart';
 import 'rso.dart';
 import 'my_rso_page.dart';
-import 'application_form_page.dart';
+import 'application_page.dart';
 
 class RsoListPage extends StatefulWidget {
   const RsoListPage({super.key});
@@ -301,15 +301,98 @@ class _RsoListPageState extends State<RsoListPage> {
       ),
     ]);
 
-    // ✅ Initialize current user with empty joined RSOs list
+    // ✅ Initialize current user with some joined RSOs
     _currentUser = User(
       username: "student@illinois.edu",
       passkey: "password123",
-      rso_list: {},
+      rso_list: {
+        _rsos[1]: "member",  // Open Source @ Illinois
+        _rsos[2]: "member",  // WCS: Women in Computer Science
+      },
     );
+
+    // Set membership status for RSOs the user has joined
+    _rsos[1].membershipStatus = MembershipStatus.member;
+    _rsos[2].membershipStatus = MembershipStatus.member;
+
+    // Add their events to the calendar
+    CalendarManager().addRsoEvents(_rsos[1].events);
+    CalendarManager().addRsoEvents(_rsos[2].events);
   }
 
   List<RSO> get joinedRsos => _rsos.where((rso) => rso.isMember).toList();
+
+  Widget _buildTrailingWidget(RSO rso) {
+    switch (rso.membershipStatus) {
+      case MembershipStatus.notMember:
+        return ElevatedButton(
+          onPressed: () async {
+            // Navigate to application page
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ApplicationPage(rso: rso),
+              ),
+            );
+            // Refresh UI if application was submitted
+            if (result == true) {
+              setState(() {});
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.orange,
+            foregroundColor: Colors.white,
+          ),
+          child: const Text('Apply'),
+        );
+
+      case MembershipStatus.pending:
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: Colors.amber[700],
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: const Text(
+            'Pending',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        );
+
+      case MembershipStatus.member:
+        return Switch(
+          value: true,
+          activeThumbColor: Colors.orange,
+          onChanged: (bool val) {
+            setState(() {
+              if (!val) {
+                // User is leaving the RSO (but can rejoin without reapplying)
+                rso.membershipStatus = MembershipStatus.inactive;
+                CalendarManager().removeRsoEvents(rso.events);
+              }
+            });
+          },
+        );
+
+      case MembershipStatus.inactive:
+        return Switch(
+          value: false,
+          activeThumbColor: Colors.orange,
+          onChanged: (bool val) {
+            setState(() {
+              if (val) {
+                // User is rejoining the RSO (no need to reapply)
+                rso.membershipStatus = MembershipStatus.member;
+                CalendarManager().addRsoEvents(rso.events);
+              }
+            });
+          },
+        );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -342,32 +425,7 @@ class _RsoListPageState extends State<RsoListPage> {
             child: ListTile(
               title: Text(rso.name, style: const TextStyle(fontWeight: FontWeight.bold)),
               subtitle: Text(rso.description),
-              trailing: Switch(
-                value: rso.isMember,
-                activeThumbColor: Colors.orange,
-                onChanged: (bool val) {
-                  // Check if switching ON and user is NOT in this RSO
-                  if (val && !_currentUser.rso_list.containsKey(rso)) {
-                    // Navigate to application form page
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ApplicationFormPage(rso: rso),
-                      ),
-                    );
-                  } else {
-                    // Normal toggle behavior
-                    setState(() {
-                      rso.isMember = val;
-                      if (val) {
-                        CalendarManager().addRsoEvents(rso.events);
-                      } else {
-                        CalendarManager().removeRsoEvents(rso.events);
-                      }
-                    });
-                  }
-                },
-              ),
+              trailing: _buildTrailingWidget(rso),
             ),
           );
         },

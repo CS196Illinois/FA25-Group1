@@ -1,3 +1,10 @@
+enum MembershipStatus {
+  notMember,   // Never applied or applied and rejected
+  pending,     // Application submitted, awaiting approval
+  member,      // Active member
+  inactive,    // Was a member but left (can rejoin without reapplying)
+}
+
 class User {
   final String username;
   final String passkey;
@@ -9,18 +16,22 @@ class User {
     Map<RSO, String>? rso_list,
   }) : rso_list = rso_list ?? {};
 }
+
 class RSO {
   final String name;
   final String description;
-  bool isMember;
+  MembershipStatus membershipStatus;
   final List<RsoEvent> events;
 
   RSO({
     required this.name,
     required this.description,
-    this.isMember = false,
+    this.membershipStatus = MembershipStatus.notMember,
     required this.events,
   });
+
+  // Convenience getter for backward compatibility
+  bool get isMember => membershipStatus == MembershipStatus.member;
 }
 
 class RsoEvent {
