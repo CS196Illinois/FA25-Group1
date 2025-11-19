@@ -119,6 +119,7 @@ import 'package:helloworld/calendar_manager.dart';
 import 'package:helloworld/calendar_page.dart';
 import 'rso.dart';
 import 'my_rso_page.dart';
+import 'application_form_page.dart';
 
 class RsoListPage extends StatefulWidget {
   const RsoListPage({super.key});
@@ -129,6 +130,7 @@ class RsoListPage extends StatefulWidget {
 
 class _RsoListPageState extends State<RsoListPage> {
   late final List<RSO> _rsos;
+  late final User _currentUser;
 
   @override
   void initState() {
@@ -298,6 +300,13 @@ class _RsoListPageState extends State<RsoListPage> {
         rso: _rsos[8],
       ),
     ]);
+
+    // ✅ Initialize current user with empty joined RSOs list
+    _currentUser = User(
+      username: "student@illinois.edu",
+      passkey: "password123",
+      joinedRsos: [],
+    );
   }
 
   List<RSO> get joinedRsos => _rsos.where((rso) => rso.isMember).toList();
@@ -337,14 +346,26 @@ class _RsoListPageState extends State<RsoListPage> {
                 value: rso.isMember,
                 activeThumbColor: Colors.orange,
                 onChanged: (bool val) {
-                  setState(() {
-                    rso.isMember = val;
-                    if (val) {
-                      CalendarManager().addRsoEvents(rso.events);
-                    } else {
-                      CalendarManager().removeRsoEvents(rso.events);
-                    }
-                  });
+                  // Check if switching ON and user is NOT in this RSO
+                  if (val && !_currentUser.joinedRsos.contains(rso)) {
+                    // Navigate to application form page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ApplicationFormPage(rso: rso),
+                      ),
+                    );
+                  } else {
+                    // Normal toggle behavior
+                    setState(() {
+                      rso.isMember = val;
+                      if (val) {
+                        CalendarManager().addRsoEvents(rso.events);
+                      } else {
+                        CalendarManager().removeRsoEvents(rso.events);
+                      }
+                    });
+                  }
                 },
               ),
             ),
