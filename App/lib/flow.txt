@@ -1,0 +1,4 @@
+from the sign in page, then it goes to the rso list page. 
+From rso list page it can go to the apply(application_form page) 
+    or to calendar 
+    or my RSO page

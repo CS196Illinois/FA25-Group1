@@ -121,6 +121,7 @@ import 'rso.dart';
 import 'my_rso_page.dart';
 import 'application_page.dart';
 import 'user_database.dart';
+import 'package:helloworld/to_do_list.dart';
 
 class RsoListPage extends StatefulWidget {
   final User? user;
@@ -139,36 +140,41 @@ class _RsoListPageState extends State<RsoListPage> {
   void initState() {
     super.initState();
 
-    // ✅ Define RSOs first, then link events back to their parent RSO
     _rsos = [
       RSO(
         name: "Society of Women Engineers (SWE)",
-        description: "Empowering women in engineering through networking, mentorship, and events.",
+        description:
+            "Empowering women in engineering through networking, mentorship, and events.",
         events: [],
       ),
       RSO(
         name: "Open Source @ Illinois",
-        description: "Collaborate on open-source software projects with peers and mentors.",
+        description:
+            "Collaborate on open-source software projects with peers and mentors.",
         events: [],
       ),
       RSO(
         name: "WCS: Women in Computer Science",
-        description: "Supporting women and minorities in computer science through mentorship and events.",
+        description:
+            "Supporting women and minorities in computer science through mentorship and events.",
         events: [],
       ),
       RSO(
         name: "Project Code",
-        description: "Hands-on coding projects for social good — open to all skill levels.",
+        description:
+            "Hands-on coding projects for social good — open to all skill levels.",
         events: [],
       ),
       RSO(
         name: "Hack for Impact",
-        description: "Develop tech solutions for nonprofits through hackathons and collaborations.",
+        description:
+            "Develop tech solutions for nonprofits through hackathons and collaborations.",
         events: [],
       ),
       RSO(
         name: "Illinois Business Consulting (IBC)",
-        description: "Work on real consulting projects for clients across industries.",
+        description:
+            "Work on real consulting projects for clients across industries.",
         events: [],
       ),
       RSO(
@@ -178,12 +184,14 @@ class _RsoListPageState extends State<RsoListPage> {
       ),
       RSO(
         name: "Accounting Club",
-        description: "Connecting accounting students with firms and professionals.",
+        description:
+            "Connecting accounting students with firms and professionals.",
         events: [],
       ),
       RSO(
         name: "ACM: Association for Computing Machinery",
-        description: "The premier computer science club at UIUC for workshops, talks, and competitions.",
+        description:
+            "The premier computer science club at UIUC for workshops, talks, and competitions.",
         events: [],
       ),
     ];
@@ -309,7 +317,9 @@ class _RsoListPageState extends State<RsoListPage> {
       _currentUser = widget.user!;
 
       // Load user's pre-existing memberships from database
-      final memberships = UserDatabase.getUserMemberships(_currentUser.username);
+      final memberships = UserDatabase.getUserMemberships(
+        _currentUser.username,
+      );
 
       // Populate the user's RSO list based on their memberships
       for (var entry in memberships.entries) {
@@ -343,8 +353,8 @@ class _RsoListPageState extends State<RsoListPage> {
         username: "student@illinois.edu",
         passkey: "password123",
         rso_list: {
-          _rsos[1]: "member",  // Open Source @ Illinois
-          _rsos[2]: "member",  // WCS: Women in Computer Science
+          _rsos[1]: "member", // Open Source @ Illinois
+          _rsos[2]: "member", // WCS: Women in Computer Science
         },
       );
 
@@ -393,10 +403,7 @@ class _RsoListPageState extends State<RsoListPage> {
           ),
           child: const Text(
             'Pending',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
         );
 
@@ -444,12 +451,25 @@ class _RsoListPageState extends State<RsoListPage> {
             const Text("All RSOs"),
             Text(
               _currentUser.username,
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.normal,
+              ),
             ),
           ],
         ),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.checklist),
+            tooltip: "to do list",
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ToDoList()),
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.favorite),
             tooltip: "My RSOs",
@@ -472,7 +492,10 @@ class _RsoListPageState extends State<RsoListPage> {
             margin: const EdgeInsets.all(8),
             color: Colors.blue[100],
             child: ListTile(
-              title: Text(rso.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+              title: Text(
+                rso.name,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
               subtitle: Text(rso.description),
               trailing: _buildTrailingWidget(rso),
             ),
