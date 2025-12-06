@@ -326,11 +326,21 @@ class _RsoListPageState extends State<RsoListPage> {
         final rsoName = entry.key;
         final status = entry.value;
 
+        // Debug: Print what we're looking for
+        print('DEBUG: Looking for RSO: "$rsoName"');
+        print('DEBUG: Available RSOs:');
+        for (var rso in _rsos) {
+          print('  - "${rso.name}"');
+        }
+
         // Find the matching RSO in our list
         final matchingRso = _rsos.firstWhere(
           (r) => r.name == rsoName,
           orElse: () => _rsos[0], // Fallback to first RSO if not found
         );
+
+        print('DEBUG: Found RSO: "${matchingRso.name}"');
+        print('DEBUG: Match? ${matchingRso.name == rsoName}');
 
         if (matchingRso.name == rsoName) {
           // Add to user's RSO list
@@ -345,6 +355,8 @@ class _RsoListPageState extends State<RsoListPage> {
           } else if (status == "pending") {
             matchingRso.membershipStatus = MembershipStatus.pending;
           }
+        } else {
+          print('DEBUG: FAILED TO MATCH! Expected "$rsoName", got "${matchingRso.name}"');
         }
       }
     } else {
