@@ -346,10 +346,9 @@ class _RsoListPageState extends State<RsoListPage> {
           // Add to user's RSO list
           _currentUser.rso_list[matchingRso] = status;
 
-          // Update RSO membership status
+          // Update RSO membership status (but don't auto-add events to calendar)
           if (status == "member") {
             matchingRso.membershipStatus = MembershipStatus.member;
-            CalendarManager().addRsoEvents(matchingRso.events);
           } else if (status == "inactive") {
             matchingRso.membershipStatus = MembershipStatus.inactive;
           } else if (status == "pending") {
@@ -370,13 +369,9 @@ class _RsoListPageState extends State<RsoListPage> {
         },
       );
 
-      // Set membership status for RSOs the user has joined
+      // Set membership status for RSOs the user has joined (but don't auto-add events to calendar)
       _rsos[1].membershipStatus = MembershipStatus.member;
       _rsos[2].membershipStatus = MembershipStatus.member;
-
-      // Add their events to the calendar
-      CalendarManager().addRsoEvents(_rsos[1].events);
-      CalendarManager().addRsoEvents(_rsos[2].events);
     }
   }
 
@@ -421,34 +416,38 @@ class _RsoListPageState extends State<RsoListPage> {
 
       case MembershipStatus.member:
         return Switch(
-          value: true,
+          value: rso.eventsLoadedInCalendar,
           activeThumbColor: Colors.orange,
           onChanged: (bool val) {
             setState(() {
-              if (!val) {
-                // User is leaving the RSO (but can rejoin without reapplying)
-                rso.membershipStatus = MembershipStatus.inactive;
+              if (val) {
+                // Load events into calendar
+                CalendarManager().addRsoEvents(rso.events);
+                rso.eventsLoadedInCalendar = true;
+              } else {
+                // Remove events from calendar
                 CalendarManager().removeRsoEvents(rso.events);
-                _currentUser.rso_list[rso] = "inactive";
+                rso.eventsLoadedInCalendar = false;
               }
             });
           },
         );
 
       case MembershipStatus.inactive:
-        return Switch(
-          value: false,
-          activeThumbColor: Colors.orange,
-          onChanged: (bool val) {
+        return ElevatedButton(
+          onPressed: () {
             setState(() {
-              if (val) {
-                // User is rejoining the RSO (no need to reapply)
-                rso.membershipStatus = MembershipStatus.member;
-                CalendarManager().addRsoEvents(rso.events);
-                _currentUser.rso_list[rso] = "member";
-              }
+              // User is rejoining the RSO (no need to reapply)
+              rso.membershipStatus = MembershipStatus.member;
+              _currentUser.rso_list[rso] = "member";
+              // Events will be loaded when they toggle the switch
             });
           },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.grey,
+            foregroundColor: Colors.white,
+          ),
+          child: const Text('Rejoin'),
         );
     }
   }

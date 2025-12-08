@@ -22,12 +22,14 @@ class RSO {
   final String description;
   MembershipStatus membershipStatus;
   final List<RsoEvent> events;
+  bool eventsLoadedInCalendar; // Track whether events are currently shown in calendar
 
   RSO({
     required this.name,
     required this.description,
     this.membershipStatus = MembershipStatus.notMember,
     required this.events,
+    this.eventsLoadedInCalendar = false, // Default to not loaded
   });
 
   // Convenience getter for backward compatibility
